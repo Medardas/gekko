@@ -1,7 +1,4 @@
 // https://gekko.wizb.it/docs/strategies/creating_a_strategy.html
-const key = '8wCVURRxSWcNLOgXji2OR028D9jhF1XzdNpmErHxbnAeKNFCBZAmPumTrnsMSbCl';
-const secret = 'YlaKfXd0xRlUysdM5cUuAASZJSieG1ysnXca6dBvTM3fOQHUEdJyA8DeqfO4jHzh';
-const username = 'medardas.mongirdas@gmail.com';
 
 var log = require('../core/log');
 const BinanceExchange = require('../exchanges/binance');
