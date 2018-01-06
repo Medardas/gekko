@@ -27,12 +27,13 @@ import { get } from '../../../tools/ajax'
 
 export default {
   props: ['onlyTradable', 'onlyImportable'],
+  //default market picker values
   data: () => {
     return {
       // defaults:
-      exchange: 'poloniex',
-      currency: 'USDT',
-      asset: 'BTC',
+      exchange: 'binance',
+      currency: 'ETH',
+      asset: 'XRP',
     };
   },
   created: function() {

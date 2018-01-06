@@ -406,7 +406,8 @@ Trader.getCapabilities = function() {
       'POWR',
       'QTUM',
       'ZEC',
-      'XRP'
+      'XRP',
+      'PPT'
     ],
     markets: [
       // https://www.binance.com/exchange/public/product
@@ -534,7 +535,12 @@ Trader.getCapabilities = function() {
       {
         pair: ['ETH', 'XRP'],
         minimalOrder: { amount: 0.001, unit: 'asset' },
-        precision: 0.01,
+        precision: 0.0001,
+      },
+      {
+        pair: ['ETH', 'PPT'],
+        minimalOrder: { amount: 0.001, unit: 'asset' },
+        precision: 0.0001,
       },
 
       //Tradeable againt USDT

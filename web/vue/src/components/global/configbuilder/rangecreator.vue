@@ -24,7 +24,7 @@ export default {
   },
   created: function() {
     let now = moment().startOf('minute');
-    let then = now.clone().subtract(3, 'months');
+    let then = now.clone().subtract(2, 'day');
 
     this.to = this.fmt(now);
     this.from = this.fmt(then);

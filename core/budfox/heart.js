@@ -11,6 +11,7 @@ if (util.getConfig().watch.tickrate)
 else if(util.getConfig().watch.exchange === 'okcoin')
   var TICKRATE = 2;
 else
+//TODO: Set tickrate here dynamically (was 20)
   var TICKRATE = 20;
 
 var Heart = function() {
