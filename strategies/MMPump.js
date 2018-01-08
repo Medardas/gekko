@@ -1,7 +1,7 @@
 // https://gekko.wizb.it/docs/strategies/creating_a_strategy.html
 
 var log = require('../core/log');
-const BinanceExchange = require('../exchanges/binance');
+const util = require(__dirname + '/../core/util');
 //this.exchange = new new BinanceExchange({api_key,secret,username});
 // Let's create our own strat
 var strat = {};
@@ -13,12 +13,19 @@ strat.init = function() {
 
 // What happens on every new candle?
 strat.update = function(candle) {
+  if(candle.close == 0.050068){
+    this.advice("long");
+  }
+  if(candle.close == 0.090286)
+    this.advice("short")
+
+//  console.log(JSON.stringify(candle));
 
 }
 
 // For debugging purposes.
 strat.log = function() {
-  log.debug('Debug message ' + this.counter++);
+  //log.debug('Debug message ' + this.counter++);
 }
 
 // Based on the newly calculated

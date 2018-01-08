@@ -44,6 +44,8 @@ var util = {
       util.die('Cannot find the specified config file.', true);
 
     _config = require(util.dirs().gekko + program.config);
+    if(program.buyForETH)
+      _config['watch']['asset'] = program.buyForETH;
     return _config;
   },
   // overwrite the whole config
@@ -143,6 +145,9 @@ var util = {
   setGekkoMode: function(mode) {
     _gekkoMode = mode;
   },
+  getCoinToBuyForETH: function () {
+    return program.buyForETH;
+  },
   gekkoMode: function() {
     if(_gekkoMode)
       return _gekkoMode;
@@ -183,7 +188,7 @@ var util = {
       minTimeout: 1 * 1000,
       maxTimeout: 3 * 1000
     };
- 
+
     retryHelper(fn, operation, callback);
   },
   retryCustom: function(options, fn, callback) {
@@ -199,6 +204,7 @@ program
   .option('-b, --backtest', 'backtesting mode')
   .option('-i, --import', 'importer mode')
   .option('--ui', 'launch a web UI')
+  .option('--buyForETH <buyForETH>', 'Buy specified coin for Etherium (ETH)')
   .parse(process.argv);
 
 // make sure the current node version is recent enough
