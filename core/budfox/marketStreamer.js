@@ -1,6 +1,6 @@
 //
-// The fetcher is responsible for fetching new
-// market data at the exchange on interval. It will emit
+// The Streamer is responsible for streaming new
+// market data at the exchange. It will emit
 // the following events:
 //
 // - `trades batch` - all new trades.
@@ -17,9 +17,9 @@ var exchangeChecker = require(util.dirs().core + 'exchangeChecker');
 
 var TradeBatcher = require(util.dirs().budfox + 'tradeBatcher');
 
-var Fetcher = function(config) {
+var Streamer = function(config) {
   if(!_.isObject(config))
-    throw 'TradeFetcher expects a config';
+    throw 'TradeStreamer expects a config';
 
   var provider = config.watch.exchange.toLowerCase();
   var DataProvider = require(util.dirs().gekko + 'exchanges/' + provider);
@@ -66,47 +66,34 @@ var Fetcher = function(config) {
   this.batcher.on('new batch', this.relayTrades);
 }
 
-util.makeEventEmitter(Fetcher);
+util.makeEventEmitter(Streamer);
 
-Fetcher.prototype._fetch = function(since) {
-  if(++this.tries >= this.limit)
+Streamer.prototype._stream = function() {
+  if(++this.tries >= this.limit) //toDO: backoff logic in budfox.js or marketDataProvider.js ?
     return;
 
-  this.watcher.getTrades(since, this.processTrades, false);
+  this.watcher.streamTrades(this.processTrades);
 }
 
-Fetcher.prototype.fetch = function() {
-  var since = false;
-  if(this.firstFetch) {
-    since = this.firstSince;
-    this.firstFetch = false;
-  } else
-    since = false;
-
+//toDO: call once and retry with backoff on failure
+Streamer.prototype.stream = function() {
   this.tries = 0;
-  log.debug('Requested', this.pair, 'trade data from', this.exchange.name, '...');
-  this._fetch(since);
+  log.debug('Requested', this.pair, 'trade data stream from', this.exchange.name, '...');
+  this._stream();
 }
 
-Fetcher.prototype.processTrades = function(err, trades) {
-  if(err || _.isEmpty(trades)) {
-    if(err) {
-      log.warn(this.exhange.name, 'returned an error while fetching trades:', err);
-      log.debug('refetching...');
-    } else
-      log.debug('Trade fetch came back empty, refetching...');
-    setTimeout(this._fetch, +moment.duration(1, 's'));
-    return;
-  }
-  this.batcher.write(trades);
+Streamer.prototype.processTrades = function(trades) {
+  console.log(JSON.stringify(trades));
+  //toDO: Check for error
+  //this.batcher.write(trades);
 }
 
-Fetcher.prototype.relayTrades = function(batch) {
+Streamer.prototype.relayTrades = function(batch) {
   this.emit('trades batch', batch);
 }
 
-Fetcher.prototype.getType = function(){
-  return "fetcher";
+Streamer.prototype.getType = function(){
+  return "streamer";
 }
 
-module.exports = Fetcher;
+module.exports = Streamer;

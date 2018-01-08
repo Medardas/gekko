@@ -1,14 +1,15 @@
-// 
+//
 // The market data provider will fetch data from a datasource on tick. It emits:
-// 
+//
 // - `trades`: batch of newly detected trades
 // - `trade`: after Gekko fetched new trades, this
 //   will be the most recent one.
 
 const _ = require('lodash');
 const util = require(__dirname + '/../util');
-
+const log = require(util.dirs().core + 'log');
 const MarketFetcher = require('./marketFetcher');
+const MarketStreamer = require('./marketStreamer');
 const dirs = util.dirs();
 const cp = require(dirs.core + 'cp');
 
@@ -17,7 +18,11 @@ const Manager = function(config) {
   _.bindAll(this);
 
   // fetch trades
-  this.source = new MarketFetcher(config);
+  if(config.watch.stream)
+    this.source = new MarketStreamer(config);
+  else
+    this.source = new MarketFetcher(config);
+
 
   // relay newly fetched trades
   this.source
@@ -28,10 +33,18 @@ util.makeEventEmitter(Manager);
 
 // HANDLERS
 Manager.prototype.retrieve = function() {
-  this.source.fetch();
+  if(this.source.getType() == "fetcher")
+    this.source.fetch();
+  else log.error("Tried to call Fetcher when Streamer is configured");
 }
 
+Manager.prototype.stream = function() {
+  if(this.source.getType() == "streamer")
+    this.source.stream();
+  else log.error("Tried to call Streamer when Fetcher is configured");
+}
 
+// ---
 Manager.prototype.relayTrades = function(batch) {
   this.emit('trades', batch);
 

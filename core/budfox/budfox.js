@@ -23,7 +23,7 @@ var BudFox = function(config) {
   Readable.call(this, {objectMode: true});
 
   // BudFox internal modules:
-  
+
   this.heart = new Heart;
   this.marketDataProvider = new MarketDataProvider(config);
   this.candleManager = new CandleManager;
@@ -34,6 +34,11 @@ var BudFox = function(config) {
   this.heart.on(
     'tick',
     this.marketDataProvider.retrieve
+  );
+
+  this.heart.on(
+    'start stream',
+    this.marketDataProvider.stream
   );
 
   // on new trade data create candles

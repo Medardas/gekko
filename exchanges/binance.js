@@ -18,6 +18,7 @@ var Trader = function(config) {
   this.pair = this.asset + this.currency;
   this.name = 'binance';
 
+  this.binanceWS = new Binance.BinanceWS();
   this.binance = new Binance.BinanceRest({
     key: this.key,
     secret: this.secret,
@@ -104,6 +105,20 @@ Trader.prototype.getTrades = function(since, callback, descending) {
 
   this.binance.aggTrades(reqData, _.bind(process, this));
 };
+
+Trader.prototype.streamTrades = function (eventHandler) {
+
+  var process = function(data) {
+    eventHandler({
+      tid: data.tradeId,
+      date: moment(data.time).unix(),
+      price: parseFloat(data.price),
+      amount: parseFloat(data.quantity),
+    });
+  };
+
+  this.binanceWS.onAggTrade(this.pair,_.bind(process, this))
+}
 
 Trader.prototype.getPortfolio = function(callback) {
   var args = _.toArray(arguments);
