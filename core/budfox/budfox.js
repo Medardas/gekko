@@ -53,7 +53,10 @@ var BudFox = function(config) {
     this.pushCandles
   );
 
-  this.heart.pump();
+  if(config.watch.stream)
+    this.heart.startStream();
+  else
+    this.heart.pump();
 
   //    Budfox also reports:
 

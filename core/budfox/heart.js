@@ -27,6 +27,11 @@ Heart.prototype.pump = function() {
   this.scheduleTicks();
 }
 
+Heart.prototype.startStream = function() {
+  log.debug('Starting Stream');
+  this.emit('start stream');
+}
+
 Heart.prototype.tick = function() {
   if(this.lastTick) {
     // make sure the last tick happened not to lang ago

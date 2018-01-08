@@ -69,7 +69,7 @@ var Streamer = function(config) {
 util.makeEventEmitter(Streamer);
 
 Streamer.prototype._stream = function() {
-  if(++this.tries >= this.limit) //toDO: backoff logic in budfox.js or marketDataProvider.js ?
+  if(++this.tries >= this.limit) //toDO: backoff logic in budfox.js or marketDataProvider.js or (best) in heart.js?
     return;
 
   this.watcher.streamTrades(this.processTrades);
