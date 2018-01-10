@@ -116,7 +116,7 @@ Trader.prototype.streamTrades = function (eventHandler) {
       amount: parseFloat(data.quantity),
     });
   };
-
+  log.info("\t\tStream opening at: " + moment().valueOf());
   this.binanceWS.onAggTrade(this.pair,_.bind(process, this))
 }
 
@@ -422,7 +422,9 @@ Trader.getCapabilities = function() {
       'QTUM',
       'ZEC',
       'XRP',
-      'PPT'
+      'PPT',
+      'DGD',
+      'WINGS'
     ],
     markets: [
       // https://www.binance.com/exchange/public/product
@@ -557,7 +559,16 @@ Trader.getCapabilities = function() {
         minimalOrder: { amount: 0.001, unit: 'asset' },
         precision: 0.0001,
       },
-
+      {
+        pair: ['ETH', 'DGD'],
+        minimalOrder: { amount: 0.001, unit: 'asset' },
+        precision: 0.0001,
+      },
+      {
+        pair: ['ETH', 'WINGS'],
+        minimalOrder: { amount: 0.001, unit: 'asset' },
+        precision: 0.0001,
+      },
       //Tradeable againt USDT
       {
         pair: ['USDT', 'BTC'],

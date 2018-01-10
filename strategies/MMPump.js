@@ -1,5 +1,7 @@
 // https://gekko.wizb.it/docs/strategies/creating_a_strategy.html
 
+// TODO: To trade with real trader enable Trader plugin require('trader')
+var moment = require('moment');
 var log = require('../core/log');
 const util = require(__dirname + '/../core/util');
 //this.exchange = new new BinanceExchange({api_key,secret,username});
@@ -13,6 +15,7 @@ strat.init = function() {
 
 // What happens on every new candle?
 strat.update = function(candle) {
+  console.log(JSON.stringify(candle));
   if(candle.close == 0.050068){
     this.advice("long");
   }

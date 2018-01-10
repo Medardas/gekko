@@ -94,8 +94,7 @@ Stitcher.prototype.prepareHistoricalData = function(done) {
       idealExchangeStartTimeTS = idealExchangeStartTime.unix();
     }
 
-    log.debug('\tFetching exchange data since', this.ago(idealExchangeStartTimeTS))
-    this.checkExchangeTrades(idealExchangeStartTime, function(err, exchangeData) {
+    this.checkExchangeTrades(idealExchangeStartTime, idealExchangeStartTimeTS, function(err, exchangeData) {
       log.debug('\tAvailable exchange data:');
       log.debug('\t\tfrom:', this.ago(exchangeData.from));
       log.debug('\t\tto:', this.ago(exchangeData.to));
@@ -173,12 +172,12 @@ Stitcher.prototype.prepareHistoricalData = function(done) {
   }.bind(this));
 }
 
-Stitcher.prototype.checkExchangeTrades = function(since, next) {
+Stitcher.prototype.checkExchangeTrades = function(since, idealExchangeStartTimeTS, next) {
   var provider = config.watch.exchange.toLowerCase();
   var DataProvider = require(util.dirs().gekko + 'exchanges/' + provider);
 
   var exchangeConfig = config.watch;
-  
+
   // include trader config if trading is enabled
   if (_.isObject(config.trader) && config.trader.enabled) {
     exchangeConfig = _.extend(config.watch, config.trader);
@@ -186,18 +185,28 @@ Stitcher.prototype.checkExchangeTrades = function(since, next) {
 
   var watcher = new DataProvider(exchangeConfig);
 
-  watcher.getTrades(since, function(e, d) {
-    if(_.isEmpty(d))
-      return util.die(
-        `Gekko tried to retrieve data since ${since.format('YYYY-MM-DD HH:mm:ss')}, however
-        ${provider} did not return any trades.`
-      );
+  if(!config.watch.stream) {
+    log.debug('\tFetching exchange data since', this.ago(idealExchangeStartTimeTS))
+    watcher.getTrades(since, function (e, d) {
+      if (_.isEmpty(d))
+        return util.die(
+          `Gekko tried to retrieve data since ${since.format('YYYY-MM-DD HH:mm:ss')}, however
+          ${provider} did not return any trades.`
+        );
 
-    next(e, {
-      from: _.first(d).date,
-      to: _.last(d).date
-    })
-  });
+      next(e, {
+        from: _.first(d).date,
+        to: _.last(d).date
+      })
+    });
+  }
+  else {
+    const {currency, asset} = config.watch;
+    log.debug("\tStreaming data for " + currency + "/" + asset + ":");
+    watcher.streamTrades(data => {
+      log.info(moment().valueOf() + ": " + JSON.stringify(data))
+    });
+  }
 }
 
 Stitcher.prototype.seedLocalData = function(from, to, next) {

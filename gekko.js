@@ -1,9 +1,9 @@
 /*
 
-  Gekko is a Bitcoin trading bot for popular Bitcoin exchanges written 
+  Gekko is a Bitcoin trading bot for popular Bitcoin exchanges written
   in node, it features multiple trading methods using technical analysis.
 
-  If you are interested in how Gekko works, read more about Gekko's 
+  If you are interested in how Gekko works, read more about Gekko's
   architecture here:
 
   https://github.com/askmike/gekko/blob/stable/docs/internals/architecture.md
@@ -12,13 +12,14 @@
 
   USE AT YOUR OWN RISK!
 
-  The author of this project is NOT responsible for any damage or loss caused 
-  by this software. There can be bugs and the bot may not perform as expected 
-  or specified. Please consider testing it first with paper trading and/or 
-  backtesting on historical data. Also look at the code to see what how 
+  The author of this project is NOT responsible for any damage or loss caused
+  by this software. There can be bugs and the bot may not perform as expected
+  or specified. Please consider testing it first with paper trading and/or
+  backtesting on historical data. Also look at the code to see what how
   it is working.
 
 */
+var moment = require('moment');
 
 console.log(`
     ______   ________  __    __  __    __   ______
@@ -35,7 +36,9 @@ console.log(`
 const util = require(__dirname + '/core/util');
 
 console.log('\tGekko v' + util.getVersion());
-console.log('\tI\'m gonna make you rich, Bud Fox.', '\n\n');
+console.log('\tI\'m gonna make you rich, Bud Fox.', '\n');
+
+console.log('\tTime started: ' + moment().valueOf() + "\n\n");
 
 const dirs = util.dirs();
 
